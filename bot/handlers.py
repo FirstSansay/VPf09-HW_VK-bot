@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import random
 from typing import Any
 
 from vkbottle import Bot
@@ -9,7 +10,7 @@ from vkbottle_types.events.bot_events import MessageEvent
 
 from config.settings import Settings
 from keyboards import menu as kb
-from models.entities import UserState
+from models.entities import DEFAULT_DIALOG_TITLE, UserState
 from services.ai_service import AIService
 from services.dialog_manager import DialogManager
 from services.fact_service import FactService
@@ -122,7 +123,7 @@ class Handlers:
                 peer_id=obj.peer_id,
                 message=text,
                 keyboard=keyboard,
-                random_id=0,
+                random_id=random.randint(1, 2**31),
             )
 
     async def _get_user(self, user_id: int) -> UserState:
@@ -145,14 +146,15 @@ class Handlers:
                     user, dialog_id, message.text
                 )
             if dialog is None:
-                dialog = user.active_dialog
-                if dialog is not None:
+                active_dialog = user.active_dialog
+                if active_dialog is not None:
                     await self.dialog_manager.rename_dialog(
-                        user, dialog.id, message.text
+                        user, active_dialog.id, message.text
                     )
+                    dialog = active_dialog
 
             await message.answer(
-                f"Диалог переименован в «{dialog.title}».",
+                f"Диалог переименован в «{dialog.title if dialog else DEFAULT_DIALOG_TITLE}».",
                 keyboard=kb.main_menu(),
             )
 

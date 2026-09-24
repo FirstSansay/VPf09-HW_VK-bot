@@ -6,7 +6,7 @@ from vkbottle import Callback, Keyboard, KeyboardButtonColor
 
 from models.entities import MODES, Dialog
 
-DIALOGS_PER_PAGE = 4
+DIALOGS_PER_PAGE = 3
 
 
 def _payload(action: str, **extra: Any) -> dict[str, Any]:
@@ -98,13 +98,16 @@ def dialogs_list(
 
 def modes_list(active_mode_id: str) -> str:
     keyboard = Keyboard(one_time=False, inline=True)
-    for mode in MODES:
+    for index, mode in enumerate(MODES):
         is_active = mode.id == active_mode_id
         label = f"{mode.title} (выбран)" if is_active else mode.title
         keyboard.add(
             Callback(label, _payload("set_mode", mode_id=mode.id)),
             color=KeyboardButtonColor.PRIMARY if is_active else KeyboardButtonColor.SECONDARY,
         )
+        if index % 2 == 1:
+            keyboard.row()
+    if len(MODES) % 2 == 1:
         keyboard.row()
     keyboard.add(
         Callback("Главное меню", _payload("menu")),

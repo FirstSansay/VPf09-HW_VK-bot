@@ -34,7 +34,7 @@ class Settings:
     vk_token: str = os.getenv("VK_TOKEN", "")
     vk_group_id: int = _get_int("VK_GROUP_ID", 0)
     openrouter_api_key: str = os.getenv("OPENROUTER_API_KEY", "")
-    model: str = os.getenv("DEEPSEEK_MODEL", "deepseek/deepseek-chat")
+    model: str = os.getenv("DEEPSEEK_MODEL", "deepseek/deepseek-v4-flash-0731")
     temperature: float = _get_float("AI_TEMPERATURE", 0.7)
     max_history_messages: int = _get_int("MAX_HISTORY_MESSAGES", 100)
     max_message_length: int = _get_int("MAX_MESSAGE_LENGTH", 4000)
